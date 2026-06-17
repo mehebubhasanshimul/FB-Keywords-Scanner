@@ -10,7 +10,6 @@
             --primary: #1877f2; /* Facebook Blue */
             --accent: #00ff00; /* Cyber Green */
             --warning: #ffcc00; /* Warning Yellow */
-            /* আপনার দেওয়া ব্যাকগ্রাউন্ড Giphy-এর ডিরেক্ট মিডিয়া লিঙ্ক */
             --bg-hack: url('https://media.giphy.com/media/xTiTnx37nc3vjsdeLK/giphy.gif');
             --card-bg: rgba(5, 10, 20, 0.9);
             --neon-glow: 0 0 20px rgba(24, 119, 242, 0.6), 0 0 40px rgba(0, 255, 0, 0.2);
@@ -223,7 +222,6 @@
             display: none;
             margin: 20px auto;
         }
-        /* আপনার দেওয়া লোগো/আইকন Giphy-এর ডিরেক্ট মিডিয়া লিঙ্ক লোডার হিসেবে ব্যবহার করা হয়েছে */
         .loader-gif { width: 60px; height: 60px; border-radius: 50%; }
 
         .admin-link {
@@ -251,7 +249,6 @@
 <body>
 
     <div class="container">
-        <!-- আপনার দেওয়া হ্যাকার অ্যানোনিমাস আইকন ডিরেক্ট লিঙ্ক লোগো হিসেবে সেট করা হয়েছে -->
         <div class="logo-wrapper">
             <img src="https://media.giphy.com/media/xTcnSWYZvafyhEACBO/giphy.gif" alt="Logo" class="logo-gif">
             <div class="scanner-line"></div>
@@ -270,7 +267,6 @@
             <i class="fa-solid fa-radar"></i> Initiate Scan
         </button>
 
-        <!-- লোডার সেকশনেও নতুন আইকন গ্লোবাল করা হয়েছে -->
         <div class="loader-box" id="loader">
             <img src="https://media.giphy.com/media/xTcnSWYZvafyhEACBO/giphy.gif" class="loader-gif">
             <p style="color: var(--accent); font-size: 0.8rem; margin-top: 5px; letter-spacing: 1px;">DECRYPTING DATABASE...</p>
@@ -316,13 +312,21 @@
                 
                 const resData = await response.json();
 
-                // যদি এরর মেসেজ কোটা এক্সিড বা অন্য কিছু আসে, তবে সেটি অ্যালার্টে দেখাবে
-                if (resData && resData.message && !resData.data) {
-                    alert("API Message: " + resData.message);
-                    timestamp.innerText = "LIMIT EXCEEDED";
+                // ১. যদি ব্যাকএন্ড কোনো ইন্টারনাল বা সার্ভার এরর দেয়
+                if (resData && resData.error && resData.details) {
+                    alert("Backend Error: " + resData.details);
+                    timestamp.innerText = "SERVER ERROR";
                     return;
                 }
 
+                // ২. যদি RapidAPI সরাসরি কোনো ব্লক বা কোটা মেসেজ পাঠায়
+                if (resData && resData.message && !resData.data) {
+                    alert("RapidAPI Message: " + resData.message);
+                    timestamp.innerText = "BLOCKED/EXCEEDED";
+                    return;
+                }
+
+                // ৩. যদি ডাটা সঠিকভাবে আসে
                 if (resData && (Array.isArray(resData) || resData.data)) {
                     const list = Array.isArray(resData) ? resData : resData.data;
                     
@@ -341,8 +345,9 @@
                     timestamp.innerText = "SUCCESS (200)";
                     resultDiv.style.display = "block";
                 } else {
-                    alert("কোনো তথ্য পাওয়া যায়নি অথবা এপিআই কোটা শেষ!");
-                    timestamp.innerText = "ERROR (404)";
+                    // ৪. অন্য যেকোনো অজানা রেসপন্সের ক্ষেত্রে আসল অবজেক্টটি দেখাবে
+                    alert("Raw Response: " + JSON.stringify(resData));
+                    timestamp.innerText = "UNKNOWN_FORMAT";
                 }
             } catch (err) {
                 alert("সার্ভার কানেকশন এরর বা টাইমআউট!");
