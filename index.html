@@ -312,40 +312,74 @@
                 
                 const resData = await response.json();
 
-                // ১. যদি ব্যাকএন্ড কোনো ইন্টারনাল বা সার্ভার এরর দেয়
+                // ১. ব্যাকএন্ড ইন্টারনাল এরর হ্যান্ডেলিং
                 if (resData && resData.error && resData.details) {
                     alert("Backend Error: " + resData.details);
                     timestamp.innerText = "SERVER ERROR";
                     return;
                 }
 
-                // ২. যদি RapidAPI সরাসরি কোনো ব্লক বা কোটা মেসেজ পাঠায়
-                if (resData && resData.message && !resData.data) {
+                // ২. র‍্যাপিড এপিআই কোটা বা লিমিট এরর হ্যান্ডেলিং
+                if (resData && resData.message && !resData.suggestions) {
                     alert("RapidAPI Message: " + resData.message);
                     timestamp.innerText = "BLOCKED/EXCEEDED";
                     return;
                 }
 
-                // ৩. যদি ডাটা সঠিকভাবে আসে
-                if (resData && (Array.isArray(resData) || resData.data)) {
-                    const list = Array.isArray(resData) ? resData : resData.data;
+                // ৩. নতুন ফেসবুক স্ক্র্যাপার ডাটা প্রসেসিং ও রেন্ডারিং
+                if (resData && resData.suggestions) {
+                    const pages = resData.suggestions.page_results || [];
+                    const keywords = resData.suggestions.keyword_results || [];
                     
-                    if(list.length === 0) {
-                        resultContent.innerHTML = "<p style='font-size:0.85rem; color:var(--warning); text-align:center;'><i class='fa-solid fa-triangle-exclamation'></i> No active matches found in Ads Library.</p>";
+                    if (pages.length === 0 && keywords.length === 0) {
+                        resultContent.innerHTML = "<p style='font-size:0.85rem; color:var(--warning); text-align:center;'><i class='fa-solid fa-triangle-exclamation'></i> No active matches found.</p>";
                     } else {
-                        list.forEach(item => {
-                            const itemText = typeof item === 'string' ? item : (item.name || item.text || JSON.stringify(item));
-                            const div = document.createElement('div');
-                            div.className = 'suggestion-item';
-                            div.innerHTML = `<i class="fa-brands fa-facebook"></i> <span>${itemText}</span>`;
-                            resultContent.appendChild(div);
-                        });
+                        // ফেসবুক টার্গেটেড পেজের ডাটা দেখানোর লুপ
+                        if (pages.length > 0) {
+                            const header = document.createElement('h3');
+                            header.style.cssText = "font-size:0.8rem; color:var(--accent); margin-bottom:8px; text-transform:uppercase;";
+                            header.innerText = "--- Target Pages Found ---";
+                            resultContent.appendChild(header);
+
+                            pages.forEach(page => {
+                                const div = document.createElement('div');
+                                div.className = 'suggestion-item';
+                                
+                                // ব্লু ভেরিফাইড ব্যাজ থাকলে ফেসবুক টিক চিহ্ন দেখাবে
+                                const isVerified = page.verification === "BLUE_VERIFIED" ? " <i class='fa-solid fa-circle-check' style='color:#1877f2; font-size:0.85rem;'></i>" : "";
+                                const likes = page.likes ? ` (${Number(page.likes).toLocaleString()} Likes)` : "";
+                                
+                                div.innerHTML = `
+                                    <img src="${page.image_uri || 'https://via.placeholder.com/30'}" style="width:30px; height:30px; border-radius:50%; border:1px solid var(--accent); object-fit:cover;">
+                                    <div>
+                                        <span style="font-weight:bold; color:#fff;">${page.name}${isVerified}</span>
+                                        <p style="font-size:0.75rem; color:#64748b;">Category: ${page.category || 'N/A'}${likes}</p>
+                                    </div>
+                                `;
+                                resultContent.appendChild(div);
+                            });
+                        }
+
+                        // সাজেস্টেড কি-ওয়ার্ডগুলোর ডাটা দেখানোর লুপ
+                        if (keywords.length > 0) {
+                            const header = document.createElement('h3');
+                            header.style.cssText = "font-size:0.8rem; color:var(--warning); margin:12px 0 8px; text-transform:uppercase;";
+                            header.innerText = "--- Suggested Ad Keywords ---";
+                            resultContent.appendChild(header);
+
+                            keywords.forEach(keyword => {
+                                const div = document.createElement('div');
+                                div.className = 'suggestion-item';
+                                div.innerHTML = `<i class="fa-solid fa-magnifying-glass" style="color:var(--warning)"></i> <span>${keyword}</span>`;
+                                resultContent.appendChild(div);
+                            });
+                        }
                     }
 
                     timestamp.innerText = "SUCCESS (200)";
                     resultDiv.style.display = "block";
                 } else {
-                    // ৪. অন্য যেকোনো অজানা রেসপন্সের ক্ষেত্রে আসল অবজেক্টটি দেখাবে
+                    // যদি এপিআই কোনো অজানা ও অদ্ভুত ফরম্যাট দেয়
                     alert("Raw Response: " + JSON.stringify(resData));
                     timestamp.innerText = "UNKNOWN_FORMAT";
                 }
