@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FB Ads OSINT & Keyword Scanner | SHADOW JOKER</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #1877f2; /* Facebook Blue */
+            --accent: #00ff00; /* Cyber Green */
+            --warning: #ffcc00; /* Warning Yellow */
+            --bg-hack: url('https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExM3Z0cmN0Ym15bXN0YTB6b3FkdXpwdHl0Z3R0Z2pyYm9pYzhvdyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/QKDpE67Rc7rpjBmQPj/giphy.gif');
+            --card-bg: rgba(5, 10, 20, 0.9);
+            --neon-glow: 0 0 20px rgba(24, 119, 242, 0.6), 0 0 40px rgba(0, 255, 0, 0.2);
+            --border-glow: 0 0 15px rgba(0, 255, 0, 0.4);
+        }
+
+        * { 
+            margin: 0; 
+            padding: 0; 
+            box-sizing: border-box; 
+            font-family: 'Consolas', 'Fira Code', monospace; 
+        }
+
+        body {
+            background-image: var(--bg-hack);
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #fff;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+
+        /* সাইবারপাঙ্ক কন্টেইনার */
+        .container {
+            width: 100%;
+            max-width: 520px;
+            padding: 35px;
+            background: var(--card-bg);
+            border-radius: 20px;
+            border: 2px solid var(--primary);
+            box-shadow: var(--neon-glow);
+            text-align: center;
+            backdrop-filter: blur(12px);
+            position: relative;
+            overflow: hidden;
+            animation: borderPulse 4s infinite alternate;
+        }
+
+        @keyframes borderPulse {
+            0% { border-color: var(--primary); box-shadow: 0 0 15px rgba(24, 119, 242, 0.5); }
+            100% { border-color: var(--accent); box-shadow: 0 0 25px rgba(0, 255, 0, 0.6); }
+        }
+
+        /* গর্জিয়াস নিয়ন লোগো */
+        .logo-wrapper {
+            position: relative;
+            width: 100px;
+            height: 100px;
+            margin: 0 auto 20px;
+        }
+
+        .logo-gif {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            border: 3px solid var(--accent);
+            box-shadow: var(--border-glow);
+            object-fit: cover;
+        }
+
+        .scanner-line {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 4px;
+            background: var(--accent);
+            box-shadow: 0 0 10px var(--accent);
+            animation: scanAnim 2s linear infinite;
+        }
+
+        @keyframes scanAnim {
+            0% { top: 0%; opacity: 0; }
+            50% { opacity: 1; }
+            100% { top: 100%; opacity: 0; }
+        }
+
+        /* গ্লিচ হেডিং */
+        h1 {
+            font-size: 1.8rem;
+            font-weight: 900;
+            letter-spacing: 2px;
+            background: linear-gradient(45deg, #1877f2, #00ff00, #ffcc00, #1877f2);
+            background-size: 300%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-transform: uppercase;
+            animation: gradientText 5s infinite linear;
+        }
+
+        @keyframes gradientText { 
+            0% { background-position: 0%; } 
+            100% { background-position: 100%; } 
+        }
+
+        .subtitle {
+            font-size: 0.75rem;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            margin-top: 2px;
+            margin-bottom: 5px;
+            display: block;
+        }
+
+        .credit { 
+            color: var(--warning); 
+            font-size: 0.85rem; 
+            margin-bottom: 25px; 
+            display: inline-block;
+            border: 1px dashed var(--warning);
+            padding: 4px 12px;
+            border-radius: 6px;
+            background: rgba(255, 204, 0, 0.05);
+        }
+
+        /* ইনপুট গ্রুপ ডিজাইন */
+        .input-group {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .input-field {
+            background: rgba(0, 0, 0, 0.75);
+            border: 2px solid #1e293b;
+            border-radius: 10px;
+            color: var(--accent);
+            font-size: 0.95rem;
+            padding: 15px;
+            outline: none;
+            transition: 0.3s;
+        }
+
+        #queryInput { flex: 2.5; text-align: left; padding-left: 20px; }
+        #countryInput { flex: 1; text-align: center; text-transform: uppercase; font-weight: bold; }
+
+        .input-field:focus { 
+            border-color: var(--accent); 
+            box-shadow: 0 0 10px rgba(0, 255, 0, 0.3); 
+        }
+
+        /* হ্যাকিং বাটন */
+        button {
+            width: 100%; 
+            padding: 16px;
+            background: linear-gradient(135deg, var(--primary), #0052c2);
+            border: 2px solid var(--accent); 
+            border-radius: 10px;
+            font-weight: bold; 
+            font-size: 1rem;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            transition: 0.4s;
+            color: #fff;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(24, 119, 242, 0.4);
+        }
+
+        button:hover { 
+            background: linear-gradient(135deg, #0052c2, var(--accent));
+            color: #000;
+            border-color: #fff;
+            box-shadow: var(--border-glow);
+            transform: translateY(-2px);
+        }
+
+        /* টার্মিনাল স্টাইল রেজাল্ট বক্স */
+        #result {
+            display: none;
+            margin-top: 30px;
+            text-align: left;
+            background: rgba(0, 0, 0, 0.9);
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid var(--primary);
+            border-left: 4px solid var(--accent);
+            max-height: 280px;
+            overflow-y: auto;
+        }
+
+        #result::-webkit-scrollbar { width: 6px; }
+        #result::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 10px; }
+
+        .terminal-header {
+            font-size: 0.75rem;
+            color: #475569;
+            margin-bottom: 12px;
+            border-bottom: 1px dashed #1e293b;
+            padding-bottom: 5px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .suggestion-item {
+            padding: 12px;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transition: 0.2s;
+        }
+
+        .suggestion-item:hover {
+            background: rgba(0, 255, 0, 0.05);
+            color: var(--accent);
+        }
+
+        .suggestion-item i { color: var(--primary); font-size: 1.1rem; }
+
+        /* লোডার অ্যানিমেশন */
+        .loader-box {
+            display: none;
+            margin: 20px auto;
+        }
+        .loader-gif { width: 60px; height: 60px; }
+
+        /* অ্যাডমিন কন্টাক্ট লিঙ্ক */
+        .admin-link {
+            display: inline-block;
+            margin-top: 25px;
+            color: var(--primary);
+            text-decoration: none;
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+            transition: 0.3s;
+            padding: 6px 16px;
+            border-radius: 20px;
+            background: rgba(24, 119, 242, 0.05);
+            border: 1px solid rgba(24, 119, 242, 0.2);
+        }
+
+        .admin-link:hover {
+            color: var(--accent);
+            border-color: var(--accent);
+            background: rgba(0, 255, 0, 0.05);
+            box-shadow: 0 0 10px rgba(0, 255, 0, 0.2);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- গর্জিয়াস অ্যানিমেটেড লোগো ও স্ক্যানার লাইন -->
+        <div class="logo-wrapper">
+            <img src="https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExOHIwd3p1MGd1am9wNDRuN3FkcGR2YWxtMTYxeTMxbjV0NXBicjN1YSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/1is4K4y0oWyyGnWTSh/giphy.gif" alt="Logo" class="logo-gif">
+            <div class="scanner-line"></div>
+        </div>
+
+        <h1>Ads OSINT Tool</h1>
+        <span class="subtitle">FB Keywords Scanner</span>
+        <span class="credit"><i class="fa-solid fa-terminal"></i> SHADOW JOKER CTH</span>
+
+        <!-- ইনপুট ফিল্ডস -->
+        <div class="input-group">
+            <input type="text" id="queryInput" class="input-field" placeholder="Enter OSINT Keyword (e.g. bks)">
+            <input type="text" id="countryInput" class="input-field" placeholder="BD" value="BD" maxlength="2">
+        </div>
+        
+        <button onclick="searchFacebookAds()" id="btnSubmit">
+            <i class="fa-solid fa-radar"></i> Initiate Scan
+        </button>
+
+        <!-- ম্যাট্রিক্স লোডার গ্লিচ -->
+        <div class="loader-box" id="loader">
+            <img src="https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExM3Z0cmN0Ym15bXN0YTB6b3FkdXpwdHl0Z3R0Z2pyYm9pYzhvdyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/QKDpE67Rc7rpjBmQPj/giphy.gif" class="loader-gif">
+            <p style="color: var(--accent); font-size: 0.8rem; margin-top: 5px; letter-spacing: 1px;">DECRYPTING DATABASE...</p>
+        </div>
+
+        <!-- টার্মিনাল রেজাল্ট আউটপুট -->
+        <div id="result">
+            <div class="terminal-header">
+                <span>[SYSTEM DATA LOG]</span>
+                <span id="timestamp">STATUS: IDLE</span>
+            </div>
+            <div id="resultContent"></div>
+        </div>
+
+        <!-- কন্টাক্ট লিঙ্ক -->
+        <a href="https://t.me/SHADOW_JOKER_CTH" target="_blank" class="admin-link">
+            <i class="fa-brands fa-telegram"></i> Secure Contact Admin
+        </a>
+    </div>
+
+    <script>
+        async function searchFacebookAds() {
+            const query = document.getElementById('queryInput').value.trim();
+            const country = document.getElementById('countryInput').value.trim().toUpperCase();
+            const btn = document.getElementById('btnSubmit');
+            const loader = document.getElementById('loader');
+            const resultDiv = document.getElementById('result');
+            const resultContent = document.getElementById('resultContent');
+            const timestamp = document.getElementById('timestamp');
+
+            if (!query) return alert("দয়া করে একটি কিওয়ার্ড ইনপুট দিন!");
+
+            loader.style.display = "block";
+            resultDiv.style.display = "none";
+            resultContent.innerHTML = ""; 
+            btn.disabled = true;
+            timestamp.innerText = "SCANNING...";
+
+            try {
+                const response = await fetch('/api/search', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ query: query, country: country || 'BD' })
+                });
+                
+                const resData = await response.json();
+
+                if (resData && (Array.isArray(resData) || resData.data)) {
+                    const list = Array.isArray(resData) ? resData : resData.data;
+                    
+                    if(list.length === 0) {
+                        resultContent.innerHTML = "<p style='font-size:0.85rem; color:var(--warning); text-align:center;'><i class='fa-solid fa-triangle-exclamation'></i> No active matches found in Ads Library.</p>";
+                    } else {
+                        list.forEach(item => {
+                            const itemText = typeof item === 'string' ? item : (item.name || item.text || JSON.stringify(item));
+                            const div = document.createElement('div');
+                            div.className = 'suggestion-item';
+                            div.innerHTML = `<i class="fa-brands fa-facebook"></i> <span>${itemText}</span>`;
+                            resultContent.appendChild(div);
+                        });
+                    }
+
+                    timestamp.innerText = "SUCCESS (200)";
+                    resultDiv.style.display = "block";
+                } else {
+                    alert("কোনো তথ্য পাওয়া যায়নি অথবা এপিআই কোটা শেষ!");
+                    timestamp.innerText = "ERROR (404)";
+                }
+            } catch (err) {
+                alert("সার্ভার কানেকশন এরর বা টাইমআউট!");
+                console.error(err);
+                timestamp.innerText = "CRITICAL FAILURE";
+            } finally {
+                loader.style.display = "none";
+                btn.disabled = false;
+            }
+        }
+    </script>
+</body>
+</html>
