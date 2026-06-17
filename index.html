@@ -10,7 +10,8 @@
             --primary: #1877f2; /* Facebook Blue */
             --accent: #00ff00; /* Cyber Green */
             --warning: #ffcc00; /* Warning Yellow */
-            --bg-hack: url('https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExM3Z0cmN0Ym15bXN0YTB6b3FkdXpwdHl0Z3R0Z2pyYm9pYzhvdyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/QKDpE67Rc7rpjBmQPj/giphy.gif');
+            /* আপনার দেওয়া ব্যাকগ্রাউন্ড Giphy-এর ডিরেক্ট মিডিয়া লিঙ্ক */
+            --bg-hack: url('https://media.giphy.com/media/xTiTnx37nc3vjsdeLK/giphy.gif');
             --card-bg: rgba(5, 10, 20, 0.9);
             --neon-glow: 0 0 20px rgba(24, 119, 242, 0.6), 0 0 40px rgba(0, 255, 0, 0.2);
             --border-glow: 0 0 15px rgba(0, 255, 0, 0.4);
@@ -37,7 +38,6 @@
             overflow-x: hidden;
         }
 
-        /* সাইবারপাঙ্ক কন্টেইনার */
         .container {
             width: 100%;
             max-width: 520px;
@@ -58,7 +58,6 @@
             100% { border-color: var(--accent); box-shadow: 0 0 25px rgba(0, 255, 0, 0.6); }
         }
 
-        /* গর্জিয়াস নিয়ন লোগো */
         .logo-wrapper {
             position: relative;
             width: 100px;
@@ -90,7 +89,6 @@
             100% { top: 100%; opacity: 0; }
         }
 
-        /* গ্লিচ হেডিং */
         h1 {
             font-size: 1.8rem;
             font-weight: 900;
@@ -129,7 +127,6 @@
             background: rgba(255, 204, 0, 0.05);
         }
 
-        /* ইনপুট গ্রুপ ডিজাইন */
         .input-group {
             display: flex;
             gap: 12px;
@@ -155,7 +152,6 @@
             box-shadow: 0 0 10px rgba(0, 255, 0, 0.3); 
         }
 
-        /* হ্যাকিং বাটন */
         button {
             width: 100%; 
             padding: 16px;
@@ -169,8 +165,6 @@
             letter-spacing: 2px;
             transition: 0.4s;
             color: #fff;
-            position: relative;
-            overflow: hidden;
             box-shadow: 0 4px 15px rgba(24, 119, 242, 0.4);
         }
 
@@ -182,7 +176,6 @@
             transform: translateY(-2px);
         }
 
-        /* টার্মিনাল স্টাইল রেজাল্ট বক্স */
         #result {
             display: none;
             margin-top: 30px;
@@ -226,14 +219,13 @@
 
         .suggestion-item i { color: var(--primary); font-size: 1.1rem; }
 
-        /* লোডার অ্যানিমেশন */
         .loader-box {
             display: none;
             margin: 20px auto;
         }
-        .loader-gif { width: 60px; height: 60px; }
+        /* আপনার দেওয়া লোগো/আইকন Giphy-এর ডিরেক্ট মিডিয়া লিঙ্ক লোডার হিসেবে ব্যবহার করা হয়েছে */
+        .loader-gif { width: 60px; height: 60px; border-radius: 50%; }
 
-        /* অ্যাডমিন কন্টাক্ট লিঙ্ক */
         .admin-link {
             display: inline-block;
             margin-top: 25px;
@@ -259,9 +251,9 @@
 <body>
 
     <div class="container">
-        <!-- গর্জিয়াস অ্যানিমেটেড লোগো ও স্ক্যানার লাইন -->
+        <!-- আপনার দেওয়া হ্যাকার অ্যানোনিমাস আইকন ডিরেক্ট লিঙ্ক লোগো হিসেবে সেট করা হয়েছে -->
         <div class="logo-wrapper">
-            <img src="https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExOHIwd3p1MGd1am9wNDRuN3FkcGR2YWxtMTYxeTMxbjV0NXBicjN1YSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/1is4K4y0oWyyGnWTSh/giphy.gif" alt="Logo" class="logo-gif">
+            <img src="https://media.giphy.com/media/xTcnSWYZvafyhEACBO/giphy.gif" alt="Logo" class="logo-gif">
             <div class="scanner-line"></div>
         </div>
 
@@ -269,7 +261,6 @@
         <span class="subtitle">FB Keywords Scanner</span>
         <span class="credit"><i class="fa-solid fa-terminal"></i> SHADOW JOKER CTH</span>
 
-        <!-- ইনপুট ফিল্ডস -->
         <div class="input-group">
             <input type="text" id="queryInput" class="input-field" placeholder="Enter OSINT Keyword (e.g. bks)">
             <input type="text" id="countryInput" class="input-field" placeholder="BD" value="BD" maxlength="2">
@@ -279,13 +270,12 @@
             <i class="fa-solid fa-radar"></i> Initiate Scan
         </button>
 
-        <!-- ম্যাট্রিক্স লোডার গ্লিচ -->
+        <!-- লোডার সেকশনেও নতুন আইকন গ্লোবাল করা হয়েছে -->
         <div class="loader-box" id="loader">
-            <img src="https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExM3Z0cmN0Ym15bXN0YTB6b3FkdXpwdHl0Z3R0Z2pyYm9pYzhvdyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/QKDpE67Rc7rpjBmQPj/giphy.gif" class="loader-gif">
+            <img src="https://media.giphy.com/media/xTcnSWYZvafyhEACBO/giphy.gif" class="loader-gif">
             <p style="color: var(--accent); font-size: 0.8rem; margin-top: 5px; letter-spacing: 1px;">DECRYPTING DATABASE...</p>
         </div>
 
-        <!-- টার্মিনাল রেজাল্ট আউটপুট -->
         <div id="result">
             <div class="terminal-header">
                 <span>[SYSTEM DATA LOG]</span>
@@ -294,7 +284,6 @@
             <div id="resultContent"></div>
         </div>
 
-        <!-- কন্টাক্ট লিঙ্ক -->
         <a href="https://t.me/SHADOW_JOKER_CTH" target="_blank" class="admin-link">
             <i class="fa-brands fa-telegram"></i> Secure Contact Admin
         </a>
@@ -326,6 +315,13 @@
                 });
                 
                 const resData = await response.json();
+
+                // যদি এরর মেসেজ কোটা এক্সিড বা অন্য কিছু আসে, তবে সেটি অ্যালার্টে দেখাবে
+                if (resData && resData.message && !resData.data) {
+                    alert("API Message: " + resData.message);
+                    timestamp.innerText = "LIMIT EXCEEDED";
+                    return;
+                }
 
                 if (resData && (Array.isArray(resData) || resData.data)) {
                     const list = Array.isArray(resData) ? resData : resData.data;
